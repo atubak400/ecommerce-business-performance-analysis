@@ -248,22 +248,6 @@ The Orders table is ready **for the next cleaning task**, not certified as free 
 
 These are documented scope limits, not reasons to discard the work completed.
 
-## 9. Lessons learned and interview-ready explanation
-
-This exercise demonstrated a systematic approach to data cleaning:
-
-1. Understand the business process and expected grain before modifying data.
-2. Correct headers and types, using locale-aware parsing for dates.
-3. Profile the **entire dataset** rather than relying on a preview.
-4. Investigate missing values in their business context before deciding to remove or fill them.
-5. Validate uniqueness only on a column expected to be unique.
-6. Test chronology using temporary, explicit validation rules.
-7. Preserve original records when the cause of an anomaly is unknown.
-8. Document the exception and apply exclusions **only to calculations it can distort**.
-
-**Example interview explanation:**
-
-> I started with the Orders table because it defines the order lifecycle and provides the keys linking sales, customers, payments and reviews. I corrected headers and locale-sensitive Date/Time fields, profiled all 99,441 records, checked missing delivery dates against order statuses, and verified that all order IDs were unique. I then used Power Query validation columns to test date sequences. I found 23 orders where the customer-delivery timestamp preceded carrier handover. Rather than deleting them, I preserved the original data, documented the issue, and planned to exclude those records only from carrier-to-customer duration calculations.
 
 ## 10. Next step in the project
 
