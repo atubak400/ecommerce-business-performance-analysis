@@ -14,7 +14,7 @@ This project involves developing an end-to-end business intelligence solution fo
 
 The objective is to transform raw transactional data into reliable, actionable business insights that support management decision-making.
 
-The engagement follows a client-style analytical workflow, covering business requirements, data preparation, quality assurance, data modelling, KPI development, interactive reporting and business recommendations.
+The engagement covers business requirements, data preparation, quality assurance, data modelling, KPI development, interactive reporting and business recommendations.
 
 ## 2. Business Problem
 
