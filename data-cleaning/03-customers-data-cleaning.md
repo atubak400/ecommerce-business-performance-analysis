@@ -145,5 +145,3 @@ The current findings describe customer **records**; they should not automaticall
 The Customers table passed the completed column-level quality checks. Its identifiers were validated, repeat identifiers were appropriately retained, postcode prefixes were standardised to five-character Text, city text was trimmed and cleaned, and all 27 Brazilian state/Federal District codes were verified. The table is ready to proceed to the next project stage, subject to the deferred cross-table and modelling checks.
 
 ---
-
-**Suggested commit message:** `Add Customers data cleaning and quality report`
