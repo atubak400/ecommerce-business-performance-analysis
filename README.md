@@ -42,8 +42,8 @@ The project aims to:
 
 ## 4. Scope of Work
 
-| Workstream | Expected Deliverable | Status |
-|---|---|---|
+| **Workstream** | **Expected Deliverable** | **Status** |
+| --- | --- | --- |
 | Data preparation | Cleaned and validated source tables | In progress |
 | Data quality | Documented checks, anomalies and treatment decisions | In progress |
 | Data modelling | Power BI semantic model and relationships | Planned |
@@ -56,8 +56,8 @@ The project aims to:
 
 The analysis uses nine related CSV datasets from the public Olist Brazilian E-Commerce dataset:
 
-| Dataset | Business Purpose |
-|---|---|
+| **Dataset** | **Business Purpose** |
+| --- | --- |
 | Orders | Order lifecycle, status and delivery timestamps |
 | Order Items | Purchased products, item prices and freight costs |
 | Customers | Customer identifiers and geographical information |
@@ -70,8 +70,8 @@ The analysis uses nine related CSV datasets from the public Olist Brazilian E-Co
 
 ## 6. Tools and Technologies
 
-| Tool | Application |
-|---|---|
+| **Tool** | **Application** |
+| --- | --- |
 | Power BI Desktop | Data modelling, analysis and interactive reporting |
 | Power Query | Data cleaning, transformation and validation |
 | DAX | Business metrics and analytical calculations |
@@ -80,22 +80,28 @@ The analysis uses nine related CSV datasets from the public Olist Brazilian E-Co
 ## 7. Planned Dashboard Deliverables
 
 ### Sales Overview
+
 Revenue trends, order volumes, product performance and commercial KPIs.
 
 ### Customer Analysis
+
 Customer distribution, purchasing patterns and geographical performance.
 
 ### Delivery Performance
+
 Order fulfilment, delivery duration, delays and operational efficiency.
 
 ### Customer Satisfaction
+
 Review scores, customer feedback and relationships with delivery outcomes.
 
 ## 8. Data Quality Assessment
 
 Data quality is assessed before developing analytical measures and reports.
 
-Checks include column completeness, data types, identifier uniqueness, missing values, business-rule validation and timestamp consistency.
+Checks include column completeness, data types, identifier uniqueness, missing values, business-rule validation, timestamp consistency and cross-table investigations.
+
+Four of the nine source datasets have been assessed. Unusual records have been retained where there is insufficient evidence to justify changing or removing them.
 
 ### Orders Dataset — Completed Assessment
 
@@ -111,7 +117,57 @@ Key findings:
 
 The 23 flagged orders have been retained without modifying their original dates. They will be excluded from calculations that require a valid carrier-to-customer delivery interval, while remaining available for other relevant analyses.
 
-**Detailed documentation:** [Orders Data Cleaning and Quality Assessment](data-cleaning/01-orders-data-cleaning.md)
+**Detailed documentation:** [Orders Data Cleaning and Quality Assessment](https://github.com/atubak400/ecommerce-business-performance-analysis/blob/main/data-cleaning/01-orders-data-cleaning.md)
+
+### Order Items Dataset — Completed Assessment
+
+The Order Items dataset contains **112,650 records**.
+
+Key findings:
+
+- All seven columns passed completeness and validity checks.
+- The combination of `order_id` and `order_item_id` is unique.
+- Item prices are positive, with a minimum recorded value of **R$0.85**.
+- No negative freight charges were identified.
+- **383 records**, representing **339 orders**, have zero freight charges.
+- Shipping-limit dates include unusually late values requiring consideration during analysis.
+
+Zero-freight records were retained because they may represent legitimate free-shipping arrangements; their precise cause has not been established.
+
+### Customers Dataset — Completed Assessment
+
+The Customers dataset contains **99,441 records** across five columns.
+
+Key findings:
+
+- All five columns passed the completed data-quality checks.
+- `customer_id` is unique.
+- No null values or errors were found in the assessed columns.
+
+The Customers table has been retained for subsequent relationship and customer-level analysis.
+
+### Order Payments Dataset — Completed Assessment
+
+The Order Payments dataset contains **103,886 payment records** associated with **99,440 distinct orders**.
+
+Key findings:
+
+- All five columns contain valid values, with no nulls or errors detected.
+- Five payment types were identified: `credit_card`, `boleto`, `voucher`, `debit_card` and `not_defined`.
+- Credit cards account for **76,795 payment records**.
+- **Three** payment records use the category `not_defined`; their business meaning requires caution.
+- **Two** credit-card records have zero instalments despite positive payment values.
+- **Six** voucher payment records have zero payment value, across five orders.
+- The combination of `order_id` and `payment_sequential` is unique.
+- **80 orders** have irregular payment sequence numbering; **78** are marked delivered, **one** unavailable and **one** processing.
+
+The anomalous payment records were retained. Missing sequence numbers were not fabricated, and zero amounts were not replaced with assumed values.
+
+**Detailed documentation:** [Order Payments Data Cleaning and Quality Assessment](https://github.com/atubak400/ecommerce-business-performance-analysis/blob/main/data-cleaning/04-order-payments-data-cleaning.md)
+
+### Outstanding Data Quality Work
+
+The remaining five source datasets require individual assessments. Cross-table relationship integrity and payment-to-order reconciliation will be reviewed during semantic modelling.
 
 ## 9. Analytical Approach
 
@@ -129,25 +185,25 @@ The project follows a structured workflow:
 ## 10. Project Progress
 
 **Completed**
+
 - Defined the initial business objectives and reporting scope.
-- Imported and assessed the Orders dataset.
-- Investigated missing values, duplicates and delivery-date inconsistencies.
-- Published detailed Orders data-cleaning documentation.
+- Imported and assessed the Orders, Order Items, Customers and Order Payments datasets.
+- Investigated missing values, duplicates, delivery-date inconsistencies, zero-value payments and payment sequence anomalies.
+- Published detailed Orders and Order Payments data-quality documentation on GitHub.
+- Saved the Power BI project after removing temporary investigation queries.
 
 **In Progress**
-- Cleaning and validating the remaining source datasets.
+
+- Cleaning and validating the remaining five datasets: Products, Reviews, Sellers, Geolocation and Product Category Translation.
+- Maintaining project documentation as assessments are completed.
 
 **Upcoming**
-- Semantic modelling, DAX measures, dashboard development and business recommendations.
 
-## 11. Data Source and Project Context
+- Semantic modelling and relationship validation.
+- DAX measures and KPI development.
+- Dashboard development and quality assurance.
+- Business insights and recommendations.
 
-This is an independently executed, client-style business intelligence project using the publicly available Brazilian E-Commerce dataset by Olist.
-
-The project is designed to demonstrate professional analytical delivery, including documented data-quality decisions, reproducible methods, reliable reporting and business-focused recommendations.
+## 11. Data Source 
 
 **Dataset:** [Brazilian E-Commerce Public Dataset by Olist — Kaggle](https://www.kaggle.com/datasets/olistbr/brazilian-ecommerce)
-
----
-
-*This repository will be updated as additional project deliverables are completed.*
