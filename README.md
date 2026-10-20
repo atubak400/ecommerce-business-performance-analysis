@@ -101,7 +101,7 @@ Data quality is assessed before developing analytical measures and reports.
 
 Checks include column completeness, data types, identifier uniqueness, missing values, business-rule validation, timestamp consistency and cross-table investigations.
 
-Four of the nine source datasets have been assessed. Unusual records have been retained where there is insufficient evidence to justify changing or removing them.
+**Five of the nine source datasets have been assessed.** Unusual records have been retained where there is insufficient evidence to justify changing or removing them.
 
 ### Orders Dataset — Completed Assessment
 
@@ -143,6 +143,7 @@ Key findings:
 - All five columns passed the completed data-quality checks.
 - `customer_id` is unique.
 - No null values or errors were found in the assessed columns.
+- Customer postcode prefixes were standardised as five-character text values to preserve leading zeros and support geographical matching.
 
 The Customers table has been retained for subsequent relationship and customer-level analysis.
 
@@ -165,9 +166,37 @@ The anomalous payment records were retained. Missing sequence numbers were not f
 
 **Detailed documentation:** [Order Payments Data Cleaning and Quality Assessment](https://github.com/atubak400/ecommerce-business-performance-analysis/blob/main/data-cleaning/04-order-payments-data-cleaning.md)
 
+### Products Dataset — Completed Assessment
+
+The Products dataset contains **32,951 product records** across nine columns.
+
+Key findings:
+
+- All **32,951 product identifiers** are unique, with no missing values or errors.
+- **610 products** have no category name or accompanying name-length, description-length and photo-quantity metadata.
+- All 610 products with missing category names were matched to Order Items records, confirming that they appear in recorded purchases.
+- **Two products** have missing weight and dimensional measurements.
+- **Four products** have a recorded weight of zero; these belong to the `cama_mesa_banho` category and have non-zero dimensions.
+- The highest recorded product weight is **40,425 g**, while **143 products** have a recorded weight of **30,000 g**.
+- Product weights of at least **29,000 g** occur across several categories, indicating that high weights are not confined to a single product category.
+- Product length ranges from **7 to 105 cm**, height from **2 to 105 cm**, and width from **6 to 118 cm**.
+
+Missing metadata, zero weights and unusually high weights were retained because the source data does not provide sufficient evidence to determine corrected values.
+
+These findings will be considered when analysing product categories, freight costs and delivery performance. Products with missing categories will not be assigned invented category labels.
+
+**Detailed documentation:** [Products Data Cleaning and Quality Assessment](https://github.com/atubak400/ecommerce-business-performance-analysis/blob/main/data-cleaning/05-products-data-cleaning.md)
+
 ### Outstanding Data Quality Work
 
-The remaining five source datasets require individual assessments. Cross-table relationship integrity and payment-to-order reconciliation will be reviewed during semantic modelling.
+The remaining four source datasets require individual assessments:
+
+- Reviews
+- Sellers
+- Geolocation
+- Product Category Translation
+
+Cross-table relationship integrity, category translation coverage and payment-to-order reconciliation will be reviewed during semantic modelling.
 
 ## 9. Analytical Approach
 
@@ -187,14 +216,16 @@ The project follows a structured workflow:
 **Completed**
 
 - Defined the initial business objectives and reporting scope.
-- Imported and assessed the Orders, Order Items, Customers and Order Payments datasets.
+- Imported and assessed the Orders, Order Items, Customers, Order Payments and Products datasets.
 - Investigated missing values, duplicates, delivery-date inconsistencies, zero-value payments and payment sequence anomalies.
-- Published detailed Orders and Order Payments data-quality documentation on GitHub.
+- Investigated missing product categories, missing dimensions, zero product weights and unusually high product weights.
+- Standardised customer postcode prefixes to preserve leading zeros.
+- Prepared individual data-quality documentation for the assessed datasets.
 - Saved the Power BI project after removing temporary investigation queries.
 
 **In Progress**
 
-- Cleaning and validating the remaining five datasets: Products, Reviews, Sellers, Geolocation and Product Category Translation.
+- Cleaning and validating the remaining four datasets: Reviews, Sellers, Geolocation and Product Category Translation.
 - Maintaining project documentation as assessments are completed.
 
 **Upcoming**
@@ -204,6 +235,6 @@ The project follows a structured workflow:
 - Dashboard development and quality assurance.
 - Business insights and recommendations.
 
-## 11. Data Source 
+## 11. Data Source
 
 **Dataset:** [Brazilian E-Commerce Public Dataset by Olist — Kaggle](https://www.kaggle.com/datasets/olistbr/brazilian-ecommerce)
