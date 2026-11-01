@@ -44,8 +44,8 @@ The project aims to:
 
 | **Workstream** | **Expected Deliverable** | **Status** |
 | --- | --- | --- |
-| Data preparation | Cleaned and validated source tables | In progress |
-| Data quality | Documented checks, anomalies and treatment decisions | In progress |
+| Data preparation | Cleaned and validated source tables | Completed |
+| Data quality | Documented checks, anomalies and treatment decisions | Completed — source-table assessments |
 | Data modelling | Power BI semantic model and relationships | Planned |
 | KPI development | Documented DAX measures | Planned |
 | Reporting | Interactive Power BI dashboards | Planned |
@@ -101,7 +101,7 @@ Data quality is assessed before developing analytical measures and reports.
 
 Checks include column completeness, data types, identifier uniqueness, missing values, business-rule validation, timestamp consistency and cross-table investigations.
 
-**Five of the nine source datasets have been assessed.** Unusual records have been retained where there is insufficient evidence to justify changing or removing them.
+**All nine source datasets have been assessed, cleaned where appropriate, documented and verified after saving.** Unusual records have been retained where there is insufficient evidence to justify changing or removing them. Cross-table integrity and analytical suitability will receive further validation during semantic modelling.
 
 ### Orders Dataset — Completed Assessment
 
@@ -187,16 +187,65 @@ These findings will be considered when analysing product categories, freight cos
 
 **Detailed documentation:** [Products Data Cleaning and Quality Assessment](https://github.com/atubak400/ecommerce-business-performance-analysis/blob/main/data-cleaning/05-products-data-cleaning.md)
 
-### Outstanding Data Quality Work
+### Order Reviews Dataset — Completed Assessment
 
-The remaining four source datasets require individual assessments:
+The Reviews dataset contains **99,224 records**. Its source-table assessment and cleaning are complete. Review data will support customer satisfaction analysis, including review scores and their relationship with delivery performance. Review-level relationships and the appropriate analytical grain will be validated during semantic modelling.
 
-- Reviews
-- Sellers
-- Geolocation
-- Product Category Translation
+**Detailed documentation:** [Reviews Data Cleaning Report](data-cleaning/06-reviews-data-cleaning.md)
 
-Cross-table relationship integrity, category translation coverage and payment-to-order reconciliation will be reviewed during semantic modelling.
+### Sellers Dataset — Completed Assessment
+
+The Sellers dataset contains **3,095 records** across four columns.
+
+Key findings and actions:
+
+- All **3,095 seller identifiers** are distinct and unique.
+- Seller ZIP code prefixes were stored as five-character text to preserve leading zeros.
+- City names were standardised using Trim, Clean and Lowercase.
+- Investigated city–state inconsistencies using ZIP code evidence and cross-checks against customer records.
+- Corrected **three** seller state values to `RJ` for ZIP prefixes `21210`, `22783` and `21320`.
+- Final columns passed validity and completeness checks.
+
+**Detailed documentation:** [Sellers Data Cleaning Report](data-cleaning/07-sellers-data-cleaning.md)
+
+### Geolocation Dataset — Completed Assessment
+
+The Geolocation dataset initially contained **1,000,163 records** across five columns.
+
+Key findings and actions:
+
+- Standardised ZIP code prefixes as five-character text, preserving leading zeros.
+- Cleaned city names and verified all **27** Brazilian state and Federal District codes.
+- Investigated latitude and longitude ranges and identified **31 potential coordinate outlier records** using combined screening conditions. These were retained rather than corrected without sufficient supporting evidence.
+- Identified **128,174 groups** of repeated identical records, containing **390,005 records** in total.
+- Removed **261,831 excess exact duplicates** across all five columns, preserving different coordinate combinations.
+- Final table contains **738,332 distinct records**.
+
+The geographical dataset requires particular care during modelling because ZIP code prefixes are not necessarily unique and a direct relationship could introduce ambiguous matches or duplicate aggregations.
+
+**Detailed documentation:** [Geolocation Data Cleaning Report](data-cleaning/08-geolocation-data-cleaning.md)
+
+### Product Category Translation Dataset — Completed Assessment
+
+The Product Category Translation dataset originally contained **71** Portuguese-to-English category mappings.
+
+Key findings and actions:
+
+- Promoted the first row to column headers.
+- Applied Trim, Clean and Lowercase to both category columns using the Power Query interface.
+- Compared **73 distinct nonblank product categories** with the translation table using a Left Anti Join.
+- Identified and added two missing mappings using Power Query M (`Table.InsertRows`):
+  - `pc_gamer` → `gaming_pc`
+  - `portateis_cozinha_e_preparadores_de_alimentos` → `portable_kitchen_appliances_and_food_preparation_equipment`
+- Final table contains **73 rows**, with **73 distinct and unique values** in each column, no errors and no empty values.
+
+The added English descriptions are project-defined mappings, not values from the original CSV. **610 products** still have no source category; these have not been assigned invented categories.
+
+**Detailed documentation:** [Product Category Translation Data Cleaning Report](data-cleaning/09-product-category-translation-data-cleaning.md)
+
+### Remaining Cross-Table Validation
+
+Source-table cleaning is complete. The next phase will validate relationship keys, cardinality, filter direction, category translation coverage in the model, payment-to-order reconciliation, and the implications of repeated ZIP prefixes and review/payment grains. These modelling checks should not be described as completed yet.
 
 ## 9. Analytical Approach
 
@@ -213,27 +262,29 @@ The project follows a structured workflow:
 
 ## 10. Project Progress
 
-**Completed**
+**Completed — Data Preparation and Quality Assessment**
 
-- Defined the initial business objectives and reporting scope.
-- Imported and assessed the Orders, Order Items, Customers, Order Payments and Products datasets.
-- Investigated missing values, duplicates, delivery-date inconsistencies, zero-value payments and payment sequence anomalies.
-- Investigated missing product categories, missing dimensions, zero product weights and unusually high product weights.
-- Standardised customer postcode prefixes to preserve leading zeros.
-- Prepared individual data-quality documentation for the assessed datasets.
-- Saved the Power BI project after removing temporary investigation queries.
+- Defined the business objectives, analytical questions and reporting scope.
+- Imported, assessed and cleaned all **nine** Olist source datasets.
+- Investigated missing values, exact duplicates, timestamp inconsistencies, payment anomalies, product attributes, seller locations and coordinate outliers.
+- Standardised relevant ZIP code prefixes and text columns.
+- Corrected three supported seller state assignments.
+- Removed 261,831 exact duplicate geolocation records while retaining 31 potential coordinate outliers for cautious downstream use.
+- Added two missing product category translations, increasing coverage from 71 to 73 nonblank categories.
+- Prepared and committed individual data-cleaning documentation for all nine datasets.
+- Saved and reopened the Power BI project to verify the transformations persisted.
 
-**In Progress**
+**Current Phase — Semantic Modelling**
 
-- Cleaning and validating the remaining four datasets: Reviews, Sellers, Geolocation and Product Category Translation.
-- Maintaining project documentation as assessments are completed.
+- Inspect existing model relationships.
+- Define table grains, keys, cardinalities and filter directions.
+- Validate cross-table joins and design a reliable reporting model.
 
 **Upcoming**
 
-- Semantic modelling and relationship validation.
-- DAX measures and KPI development.
-- Dashboard development and quality assurance.
-- Business insights and recommendations.
+- Develop and test DAX measures and KPIs.
+- Build and validate management dashboards.
+- Produce business insights, limitations and recommendations.
 
 ## 11. Data Source
 
