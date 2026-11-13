@@ -46,7 +46,7 @@ The project aims to:
 | --- | --- | --- |
 | Data preparation | Cleaned and validated source tables | Completed |
 | Data quality | Documented checks, anomalies and treatment decisions | Completed — source-table assessments |
-| Data modelling | Power BI semantic model and relationships | Planned |
+| Data modelling | Power BI semantic model, location dimension and relationships | Completed — initial model |
 | KPI development | Documented DAX measures | Planned |
 | Reporting | Interactive Power BI dashboards | Planned |
 | Business analysis | Findings and recommendations | Planned |
@@ -243,9 +243,25 @@ The added English descriptions are project-defined mappings, not values from the
 
 **Detailed documentation:** [Product Category Translation Data Cleaning Report](data-cleaning/09-product-category-translation-data-cleaning.md)
 
-### Remaining Cross-Table Validation
+### Cross-Table Validation and Model Readiness
 
-Source-table cleaning is complete. The next phase will validate relationship keys, cardinality, filter direction, category translation coverage in the model, payment-to-order reconciliation, and the implications of repeated ZIP prefixes and review/payment grains. These modelling checks should not be described as completed yet.
+Source-table cleaning is complete. The initial semantic model has been created and its nine relationships configured with many-to-one cardinality and single-direction filtering. The location dimension incorporates ZIP prefixes missing from the geolocation source. Further validation remains necessary for payment-to-order reconciliation, calculation behavior across tables, and the analytical implications of payment and review record grains. These outstanding checks are not described as completed.
+
+## 8A. Power BI Data Modeling — Completed Initial Model
+
+The Power BI semantic model contains **nine loaded tables**: seven transactional and business-entity tables (orders, order items, customers, payments, products, reviews and sellers), the product-category translation lookup, and `dim_location`. The original geolocation source and intermediate validation queries remain in Power Query with loading disabled, preserving the transformation work without cluttering the reporting model.
+
+### Geographic dimension and coverage
+
+The `dim_location` lookup uses a unique five-character ZIP-code prefix as its key. It combines **19,015** prefixes from geolocation with **157** additional customer-only prefixes and **5** additional seller-only prefixes, producing **19,177 unique ZIP prefixes**. City and state labels remain available for all locations. Coordinates for the 162 additional prefixes are intentionally null rather than estimated.
+
+### Relationships and filtering
+
+The model has **nine many-to-one relationships** with single-direction filtering. The customer-to-location relationship is active. The seller-to-location relationship is **inactive** to prevent ambiguous filter paths and can be activated within suitable DAX calculations when seller geography is needed. This is an initial, documented reporting model; DAX and report-level validation are upcoming.
+
+**Detailed documentation:** [Data Modeling and Location Dimension Report](data-modeling/DATA_MODELING_REPORT.md)
+
+**Model diagram:** [View Power BI relationship diagram](data-modeling/images/power-bi-data-model.png)
 
 ## 9. Analytical Approach
 
@@ -274,15 +290,23 @@ The project follows a structured workflow:
 - Prepared and committed individual data-cleaning documentation for all nine datasets.
 - Saved and reopened the Power BI project to verify the transformations persisted.
 
-**Current Phase — Semantic Modelling**
+**Completed — Initial Semantic Modeling**
 
-- Inspect existing model relationships.
-- Define table grains, keys, cardinalities and filter directions.
-- Validate cross-table joins and design a reliable reporting model.
+- Built `dim_location` with **19,177 unique ZIP-code prefixes**, extending the original geolocation coverage to include customer-only and seller-only locations.
+- Retained missing latitude and longitude as null rather than inventing coordinates.
+- Configured **nine many-to-one, single-direction relationships** across the nine loaded reporting tables.
+- Kept the seller-to-location relationship inactive to avoid ambiguous filter paths.
+- Disabled loading of intermediate validation and transformation queries without deleting them.
+- Documented the model and added a Power BI relationship diagram in [`data-modeling/`](data-modeling/DATA_MODELING_REPORT.md).
+
+**Current Phase — DAX KPI Development and Model Validation**
+
+- Define business metrics and validate their calculations against the underlying data.
+- Check filter behavior and the effects of payment, review and location relationship choices.
 
 **Upcoming**
 
-- Develop and test DAX measures and KPIs.
+- Develop and test additional DAX measures and KPIs.
 - Build and validate management dashboards.
 - Produce business insights, limitations and recommendations.
 
