@@ -100,11 +100,9 @@ These queries remain available to Power Query for refresh, auditability, and dep
 
 ## 6. Model diagram
 
-Add an exported screenshot of the final Power BI Model view to the repository, for example at `images/power-bi-data-model.png`, and embed it here:
+The diagram below shows the Power BI data model, including the relationships between the Olist datasets and the location dimension.
 
-```markdown
 ![Power BI data model](images/power-bi-data-model.png)
-```
 
 ## 7. Next stage
 
